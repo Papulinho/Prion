@@ -1,0 +1,140 @@
+--- Simulación de Priones ---
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Definición de los estados
+enum Estado {S1, S2, S3, S4, S5, S6, S7};
+
+// Función para manejar el plegamiento
+enum Estado plegamiento(enum Estado estado_actual, int plegamiento_correcto) {
+    if (estado_actual == S1) {
+        if (plegamiento_correcto) {
+            return S2;
+        } else {
+            return S4;
+        }
+    }
+    // Si no estamos en el estado S1, no hacemos nada
+    return estado_actual;
+}
+
+// Función para manejar la interacción con otras proteínas
+enum Estado interaccion(enum Estado estado_actual) {
+    if (estado_actual == S2) {
+        return S3;
+    } else if (estado_actual == S4) {
+        return S5;
+    }
+    // Si no estamos en el estado S2 o S4, no hacemos nada
+    return estado_actual;
+}
+
+// Función para manejar la propagación
+enum Estado propagacion(enum Estado estado_actual) {
+    if (estado_actual == S5) {
+        return S6;
+    } else if (estado_actual == S6) {
+        return S7;
+    }
+    // Si no estamos en el estado S5 o S6, no hacemos nada
+    return estado_actual;
+}
+
+int main() {
+    
+    printf("\n Simulación de un prion maligno. \n");
+    printf("\n Tras la formacion de una cadena de aminoacidos, el pliegue fue...\n");
+    enum Estado estado_actual = S1;
+    int plegamiento_correcto;
+
+    // Inicializamos la semilla del generador de números aleatorios
+    srand(time(NULL));
+
+    // Generamos un número aleatorio entre 0 y 1
+    plegamiento_correcto = rand() % 2;
+
+    estado_actual = plegamiento(estado_actual, plegamiento_correcto);
+
+    if (estado_actual == S2) {
+        printf("\n Correcto, El PRPc (prion sano) se creó normalmente y continua sus funciones normalmente.\n");
+    } else if (estado_actual == S4) {
+        estado_actual = interaccion(estado_actual);
+        estado_actual = propagacion(estado_actual);
+        printf("\n Incorrecto, se forma un PRPsc (prion infeccioso),\n ahora interactua con otras proteinas y \n se propaga creando enfermedades EET (encefelopatitis espongiforme transmisible).\n");
+    }
+
+    return 0;
+}
+
+
+-----------------------------------------------------
+
+Autómata del Kuru:
+
+#include <stdio.h>
+
+// Definición de los estados
+enum Estado {S1, S2, S3, S4, S5};
+
+// Función para manejar la exposición
+enum Estado exposicion(enum Estado estado_actual) {
+    if (estado_actual == S1) {
+        return S2;
+    }
+    // Si no estamos en el estado S1, no hacemos nada
+    return estado_actual;
+}
+
+// Función para manejar la migración de priones al cerebro
+enum Estado migracion(enum Estado estado_actual) {
+    if (estado_actual == S2) {
+        return S3;
+    }
+    // Si no estamos en el estado S2, no hacemos nada
+    return estado_actual;
+}
+
+// Función para manejar el desarrollo de síntomas
+enum Estado desarrollo_sintomas(enum Estado estado_actual) {
+    if (estado_actual == S3) {
+        return S4;
+    }
+    // Si no estamos en el estado S3, no hacemos nada
+    return estado_actual;
+}
+
+// Función para manejar la progresión de la enfermedad
+enum Estado progresion_enfermedad(enum Estado estado_actual) {
+    if (estado_actual == S4) {
+        return S5;
+    }
+    // Si no estamos en el estado S4, no hacemos nada
+    return estado_actual;
+}
+
+int main() {
+    enum Estado estado_actual = S1;
+    
+    printf("\n Simulador de Infeccion por Kuru. \n");
+
+    estado_actual = exposicion(estado_actual);
+
+    if (estado_actual == S1) {
+        printf("\n La persona no fue expuesta a priones, por lo tanto no mostrará sintomas.\n");
+    } else if (estado_actual == S2) {
+        estado_actual = migracion(estado_actual);
+        estado_actual = desarrollo_sintomas(estado_actual);
+        estado_actual = progresion_enfermedad(estado_actual);
+        printf("\n La persona fue expuesta a priones por ritual de consumo de carne humana.\n");
+        printf("\n Muestra sintomas como dolor en brazos y piernas, temblores musculares, problemas de coordinación, \n dificultad al tragar, úlceras, dolor de cabeza.\n");
+        printf("\n El kuru puede provocar episodios de locura y risa maniaca que se vuelve incontrolable, así como depresión.\n");
+        printf("\n No existe tratamiento para el Kuru.\n");
+        printf("\n El infectado muere despues de meses tras la aparición de los sintomas.\n");
+    }
+
+    return 0;
+}
+
